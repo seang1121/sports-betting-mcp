@@ -1,0 +1,22 @@
+# Credentials — never commit
+.mcpregistry_github_token
+.mcpregistry_registry_token
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Binaries
+*.exe
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Environment
+.env
+.env.*

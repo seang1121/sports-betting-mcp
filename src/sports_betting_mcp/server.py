@@ -3,13 +3,14 @@ sports-betting-mcp — MCP server for AI-powered sports betting analysis
 Backed by real data: 1,353+ resolved picks, 59.6% win rate
 """
 
+import base64
 import os
 import json
 import urllib.request
 import urllib.parse
 import urllib.error
 from typing import Optional
-from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP, Image
 
 BASE_URL = os.environ.get("SPORTS_BETTING_API_URL", "http://localhost:5000")
 API_KEY = os.environ.get("SPORTS_BETTING_API_KEY", "")
@@ -54,25 +55,65 @@ def _api_get(path: str, params: Optional[dict] = None) -> dict:
         raise RuntimeError(f"API error {e.code}: {body[:200]}") from e
 
 
+def _api_post(path: str, body: dict) -> dict:
+    """Authenticated POST request using X-API-Key header."""
+    if not API_KEY:
+        raise RuntimeError(
+            "Set SPORTS_BETTING_API_KEY environment variable. "
+            "Get your key at https://sportsbettingaianalyzer.com/account/api-keys"
+        )
+    url = f"{BASE_URL}{path}"
+    payload = json.dumps(body).encode()
+    req = urllib.request.Request(
+        url, data=payload,
+        headers={"X-API-Key": API_KEY, "Content-Type": "application/json"},
+        method="POST"
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return json.loads(resp.read().decode())
+    except urllib.error.HTTPError as e:
+        body_text = e.read().decode()
+        raise RuntimeError(f"API error {e.code}: {body_text[:200]}") from e
+
+
+def _fetch_slip(pick_name: str, sport: str, probability: float) -> Optional[Image]:
+    """Fetch a Nimrod bet slip image from the API. Returns FastMCP Image or None."""
+    try:
+        slip = _api_post("/xk/slip", {
+            "pick_name": pick_name,
+            "sport": sport,
+            "probability": int(probability),
+        })
+        img_b64 = slip.get("image_b64")
+        if img_b64:
+            return Image(data=base64.b64decode(img_b64), format="png")
+    except Exception:
+        pass
+    return None
+
+
 # ── Tools ─────────────────────────────────────────────────────────────────────
 
 @mcp.tool()
-def get_todays_picks(sport: str = "all") -> str:
+def get_todays_picks(sport: str = "all") -> list:
     """
     Get today's AI-generated picks with confidence and edge scores.
+    Includes a visual bet slip card for the top pick per sport.
 
     Args:
         sport: Filter by sport — 'nba', 'nhl', 'ncaab', or 'all' (default)
 
     Returns:
         List of picks with pick name, bet type, line, odds, confidence, and edge score.
+        Visual bet slip cards are included for the top pick per sport.
     """
     try:
         data = _api_get("/xk/p", {"sport": sport} if sport != "all" else None)
         picks = data if isinstance(data, list) else data.get("picks", [])
 
         if not picks:
-            return f"No picks available for {sport} today."
+            return [f"No picks available for {sport} today."]
 
         lines = [f"TODAY'S AI PICKS ({sport.upper() if sport != 'all' else 'ALL SPORTS'})\n"]
         for p in picks[:20]:
@@ -91,28 +132,56 @@ def get_todays_picks(sport: str = "all") -> str:
                 f"  [{sport_tag}] {pick_name} {bet_type}{line_str}{odds_str} — {confidence} confidence{edge_str}"
             )
 
-        return "\n".join(lines)
+        lines.append("\n---\nPowered by sportsbettingaianalyzer.com — free access, real AI picks.")
+
+        content = ["\n".join(lines)]
+
+        # Top pick per sport — attach bet slip image
+        seen_sports = set()
+        confidence_order = {"high": 0, "medium": 1, "low": 2}
+        sorted_picks = sorted(
+            picks,
+            key=lambda p: (
+                confidence_order.get((p.get("confidence") or "low").lower(), 2),
+                -float(p.get("edge_score") or 0)
+            )
+        )
+        for p in sorted_picks:
+            sport_tag = (p.get("sport") or "").upper()
+            if sport_tag in seen_sports or sport_tag not in ("NBA", "NHL", "NCAAB"):
+                continue
+            pick_name = p.get("pick_name") or p.get("team") or ""
+            prob = float(p.get("edge_score") or 0) + 50
+            if pick_name:
+                img = _fetch_slip(pick_name, sport_tag, prob)
+                if img:
+                    content.append(img)
+            seen_sports.add(sport_tag)
+            if len(seen_sports) == 3:
+                break
+
+        return content
     except Exception as e:
-        return f"Error fetching picks: {e}"
+        return [f"Error fetching picks: {e}"]
 
 
 @mcp.tool()
-def get_top_pick(sport: str = "all") -> str:
+def get_top_pick(sport: str = "all") -> list:
     """
-    Get the single highest-confidence pick available today.
+    Get the single highest-confidence pick available today with a visual bet slip card.
 
     Args:
         sport: Filter by sport — 'nba', 'nhl', 'ncaab', or 'all' (default)
 
     Returns:
-        The best pick with full analysis details.
+        The best pick with full analysis details and a visual bet slip image.
     """
     try:
         data = _api_get("/xk/p", {"sport": sport} if sport != "all" else None)
         picks = data if isinstance(data, list) else data.get("picks", [])
 
         if not picks:
-            return "No picks available today."
+            return ["No picks available today."]
 
         # Sort by confidence tier then edge score
         confidence_order = {"high": 0, "medium": 1, "low": 2}
@@ -122,21 +191,31 @@ def get_top_pick(sport: str = "all") -> str:
             return (conf, -edge)
 
         best = sorted(picks, key=sort_key)[0]
+        pick_name = best.get("pick_name") or best.get("team") or "?"
+        sport_tag = (best.get("sport") or "?").upper()
+        prob = float(best.get("edge_score") or 0) + 50
 
         lines = [
             "TOP PICK TODAY",
-            f"  Pick:       {best.get('pick_name') or best.get('team') or '?'}",
-            f"  Sport:      {(best.get('sport') or '?').upper()}",
+            f"  Pick:       {pick_name}",
+            f"  Sport:      {sport_tag}",
             f"  Bet Type:   {(best.get('bet_type') or '?').upper()}",
             f"  Line:       {best.get('line_value') or best.get('line') or 'N/A'}",
             f"  Odds:       {best.get('odds') or 'N/A'}",
             f"  Confidence: {best.get('confidence') or '?'}",
             f"  Edge Score: {best.get('edge_score') or best.get('edge') or 'N/A'}",
             f"  Game:       {best.get('game') or 'N/A'}",
+            "\nFree picks at sportsbettingaianalyzer.com",
         ]
-        return "\n".join(lines)
+        content = ["\n".join(lines)]
+
+        img = _fetch_slip(pick_name, sport_tag, prob)
+        if img:
+            content.append(img)
+
+        return content
     except Exception as e:
-        return f"Error fetching top pick: {e}"
+        return [f"Error fetching top pick: {e}"]
 
 
 @mcp.tool()

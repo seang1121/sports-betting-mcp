@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "sports-betting-mcp"
-version = "0.1.0"
+version = "0.1.2"
 description = "MCP server for AI-powered sports betting analysis — NBA, NHL, NCAAB"
 mcpName = "io.github.seang1121/sports-betting-mcp"
 readme = "README.md"
