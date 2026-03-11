@@ -1,0 +1,33 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.seang1121/sports-betting-mcp",
+  "description": "AI-powered sports betting analysis — NBA, NHL, NCAAB. The only MCP server backed by real data: 1,353+ resolved picks and a 59.6% documented win rate. Tools: picks, odds, injuries, line movement, win rates.",
+  "repository": {
+    "url": "https://github.com/seang1121/sports-betting-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "sports-betting-mcp",
+      "version": "0.1.0",
+      "runtimeArguments": [],
+      "environmentVariables": [
+        {
+          "name": "SPORTS_BETTING_API_URL",
+          "description": "URL of the Sports Betting Analyzer API (default: http://localhost:5000)",
+          "required": false
+        },
+        {
+          "name": "SPORTS_BETTING_API_KEY",
+          "description": "Your API key from sportsbettingaianalyzer.com/account/api-keys",
+          "required": true
+        }
+      ],
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
