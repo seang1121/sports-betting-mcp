@@ -1,6 +1,9 @@
 {
   "$schema": "https://glama.ai/mcp/schemas/server.json",
-  "maintainers": [
-    "seang1121"
+  "maintainers": ["seang1121"],
+  "relatedServers": [
+    "@anthropics/mcp-server-fetch",
+    "@nicekid1/weather-mcp",
+    "@Bortlesboat/bitcoin-mcp"
   ]
 }
