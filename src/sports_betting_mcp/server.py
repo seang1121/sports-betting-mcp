@@ -410,3 +410,71 @@ def get_line_movement(sport: str = "all") -> str:
         return "\n".join(lines)
     except Exception as e:
         return f"Error fetching line movement: {e}"
+
+
+@mcp.tool()
+def analyze_game(sport: str, game_id: str) -> str:
+    """
+    Run full multi-agent analysis on a specific game.
+    Uses 12 specialized agents to evaluate every angle.
+
+    Args:
+        sport: Sport — 'nba', 'nhl', or 'ncaab'
+        game_id: Game ID from the get_live_odds tool
+
+    Returns:
+        Complete multi-agent analysis with consensus pick, confidence, and edge breakdown.
+    """
+    if sport.lower() not in ("nba", "nhl", "ncaab"):
+        return "Invalid sport. Use: nba, nhl, or ncaab"
+
+    try:
+        data = _api_post("/api/analyze", {"sport": sport.upper(), "game_id": game_id})
+
+        if not data.get("success", True):
+            return f"Analysis failed: {data.get('error', 'Unknown error')}"
+
+        lines = [f"FULL GAME ANALYSIS — {sport.upper()}\n"]
+
+        pick = data.get("pick") or data.get("recommendation") or {}
+        if pick:
+            lines.append(f"  Pick:       {pick.get('pick_name', 'N/A')}")
+            lines.append(f"  Bet Type:   {pick.get('bet_type', 'N/A')}")
+            lines.append(f"  Confidence: {pick.get('confidence', 'N/A')}")
+            lines.append(f"  Edge Score: {pick.get('edge_score', 'N/A')}")
+
+        analysis = data.get("analysis") or data.get("details") or ""
+        if analysis:
+            lines.append(f"\n{analysis[:1500]}")
+
+        return "\n".join(lines)
+    except Exception as e:
+        return f"Error analyzing game: {e}"
+
+
+@mcp.tool()
+def get_system_status() -> str:
+    """
+    Health check — uptime, database status, API key status, and scheduler health.
+
+    Returns:
+        Current system status including uptime, DB connectivity, and service health.
+    """
+    try:
+        data = _api_get("/api/health")
+
+        lines = ["SYSTEM STATUS\n"]
+        lines.append(f"  Status:   {data.get('status', 'unknown')}")
+        lines.append(f"  Uptime:   {data.get('uptime', 'N/A')}")
+        lines.append(f"  Database: {data.get('database', 'N/A')}")
+
+        schedulers = data.get("schedulers") or {}
+        if schedulers:
+            lines.append("\n  Schedulers:")
+            for name, status in schedulers.items():
+                icon = "OK" if status in ("success", "ok", True) else "FAIL"
+                lines.append(f"    {name}: {icon}")
+
+        return "\n".join(lines)
+    except Exception as e:
+        return f"Error checking status: {e}"

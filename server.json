@@ -6,12 +6,12 @@
     "url": "https://github.com/seang1121/sports-betting-mcp",
     "source": "github"
   },
-  "version": "0.1.2",
+  "version": "1.0.0",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "sports-betting-mcp",
-      "version": "0.1.2",
+      "version": "1.0.0",
       "runtimeArguments": [],
       "environmentVariables": [
         {

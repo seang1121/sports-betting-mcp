@@ -4,12 +4,27 @@ build-backend = "hatchling.build"
 
 [project]
 name = "sports-betting-mcp"
-version = "0.1.2"
-description = "MCP server for AI-powered sports betting analysis — NBA, NHL, NCAAB"
+version = "1.0.0"
+description = "MCP server for AI-powered sports betting analysis — NBA, NHL, NCAAB. 9 tools: picks, odds, injuries, line movement, game analysis, and more."
 mcpName = "io.github.seang1121/sports-betting-mcp"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
+authors = [
+    {name = "Sean Goudy"},
+]
+keywords = ["mcp", "sports-betting", "ai", "nba", "nhl", "ncaab", "odds", "predictions", "claude"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
 dependencies = [
     "mcp>=1.0.0",
 ]
@@ -18,7 +33,9 @@ dependencies = [
 sports-betting-mcp = "sports_betting_mcp.server:mcp.run"
 
 [project.urls]
-Homepage = "https://github.com/seang1121/sports-betting-mcp"
+Homepage = "https://sportsbettingaianalyzer.com"
+Repository = "https://github.com/seang1121/sports-betting-mcp"
+Issues = "https://github.com/seang1121/sports-betting-mcp/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/sports_betting_mcp"]

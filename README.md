@@ -43,7 +43,7 @@ Add to your MCP config:
 }
 ```
 
-## Available Tools
+## Available Tools (9)
 
 | Tool | Description |
 |------|-------------|
@@ -54,6 +54,8 @@ Add to your MCP config:
 | `get_pending_picks` | Currently unresolved logged picks |
 | `get_injury_report` | Active injuries affecting today's lines |
 | `get_line_movement` | Significant line shifts since market open |
+| `analyze_game` | Full 12-agent analysis on a specific game — consensus pick + edge breakdown |
+| `get_system_status` | Health check — uptime, DB status, scheduler health |
 
 ## Visual Bet Slip Cards
 
