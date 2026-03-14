@@ -3,7 +3,8 @@
   "maintainers": ["seang1121"],
   "relatedServers": [
     "@anthropics/mcp-server-fetch",
-    "@nicekid1/weather-mcp",
-    "@Bortlesboat/bitcoin-mcp"
+    "@Bortlesboat/bitcoin-mcp",
+    "@massive-com/polygon-io-mcp-server",
+    "@token-metrics/tmai-mcp"
   ]
 }
