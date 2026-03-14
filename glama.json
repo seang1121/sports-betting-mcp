@@ -1,39 +1,6 @@
 {
-  "name": "sports-betting-mcp",
-  "display_name": "Sports Betting AI",
-  "description": "AI sports betting picks, odds, injuries & line movement for NBA, NHL, NCAAB. 9 tools including visual bet slip cards. 59.6% documented win rate across 1,353+ picks.",
-  "version": "1.0.0",
-  "author": "Sean Goudy",
-  "homepage": "https://sportsbettingaianalyzer.com",
-  "repository": "https://github.com/seang1121/sports-betting-mcp",
-  "license": "MIT",
-  "categories": ["sports", "analytics", "ai"],
-  "tags": ["sports-betting", "nba", "nhl", "ncaab", "odds", "predictions", "ai", "mcp"],
-  "installation": {
-    "pip": "pip install sports-betting-mcp",
-    "uvx": "uvx sports-betting-mcp"
-  },
-  "environment_variables": [
-    {
-      "name": "SPORTS_BETTING_API_KEY",
-      "description": "API key from sportsbettingaianalyzer.com/account/api-keys",
-      "required": true
-    },
-    {
-      "name": "SPORTS_BETTING_API_URL",
-      "description": "API base URL (defaults to https://sportsbettingaianalyzer.com)",
-      "required": false
-    }
-  ],
-  "tools": [
-    {"name": "get_todays_picks", "description": "All AI picks for today with confidence, edges, and bet slip cards"},
-    {"name": "get_top_pick", "description": "Highest-confidence pick of the day with visual bet slip image"},
-    {"name": "get_live_odds", "description": "Live moneyline, spread, and totals from FanDuel/BetMGM"},
-    {"name": "get_win_rate", "description": "Documented win rate with full record breakdown by sport"},
-    {"name": "get_pending_picks", "description": "Currently unresolved logged picks"},
-    {"name": "get_injury_report", "description": "Active injuries affecting today's lines"},
-    {"name": "get_line_movement", "description": "Significant line shifts since market open"},
-    {"name": "analyze_game", "description": "Full 12-agent analysis on a specific game"},
-    {"name": "get_system_status", "description": "Health check — uptime, DB status, scheduler health"}
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": [
+    "seang1121"
   ]
 }
