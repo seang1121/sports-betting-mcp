@@ -1,31 +1,50 @@
 # sports-betting-mcp
 
-mcp-name: io.github.seang1121/sports-betting-mcp
+**MCP server exposing AI-powered sports betting predictions, live odds, and analysis tools to Claude.**
 
-**The first MCP server for AI-powered sports betting analysis.**
+![Status](https://img.shields.io/badge/status-active-green)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-blue)
+![PyPI](https://img.shields.io/pypi/v/sports-betting-mcp)
 
-**Backed by real data: 1,353+ resolved picks | 59.6% documented win rate | NBA, NHL, NCAAB**
+mcp-name: `io.github.seang1121/sports-betting-mcp`
 
-Give Claude and other AI agents live access to sports betting intelligence — picks, odds, injuries, line movement, win rates, and visual bet slip cards.
+Give Claude and other AI agents live access to sports betting intelligence -- picks, odds, injuries, line movement, win rates, and visual bet slip cards. Backed by real data: 1,353+ resolved picks with a 59.6% documented win rate across NBA, NHL, and NCAAB.
 
-## Install
+## What It Does
+
+An MCP (Model Context Protocol) server that connects AI assistants to a production sports betting analyzer. Claude can query today's top picks, pull live odds from FanDuel/BetMGM, check injury reports, and track line movement -- all through structured tool calls that return data and visual bet slip images.
+
+## Features
+
+- **7 MCP tools** -- top pick, daily picks, live odds, win rate, pending picks, injury report, line movement
+- **Visual bet slip cards** -- rich images rendered directly in Claude chat showing pick analysis, key stats, and edges
+- **Live odds** -- moneyline, spread, and totals from major sportsbooks
+- **AI predictions** -- confidence scores, probability edges, and full analysis per pick
+- **Injury tracking** -- active injuries affecting today's lines
+- **Line movement** -- significant shifts since market open
+
+## Tech Stack
+
+- **Python 3.10+** with MCP SDK (`mcp>=1.0.0`)
+- **Hatchling** build system
+- **MCP Protocol** for AI agent integration
+
+## Quick Start
 
 ```bash
 pip install sports-betting-mcp
 ```
 
-## Quick Start
+Set credentials and run:
 
 ```bash
-# Set credentials
 export SPORTS_BETTING_API_URL=https://sportsbettingaianalyzer.com
 export SPORTS_BETTING_API_KEY=your_api_key
-
-# Run server
 sports-betting-mcp
 ```
 
-## Claude Desktop / Claude Code Setup
+### Claude Desktop / Claude Code Setup
 
 Add to your MCP config:
 
@@ -47,8 +66,8 @@ Add to your MCP config:
 
 | Tool | Description |
 |------|-------------|
-| `get_top_pick` | Highest-confidence pick of the day — returns full analysis + **visual bet slip image** |
-| `get_todays_picks` | All AI picks for today with confidence, edges, and **bet slip cards per sport** |
+| `get_top_pick` | Highest-confidence pick of the day with visual bet slip image |
+| `get_todays_picks` | All AI picks with confidence, edges, and bet slip cards per sport |
 | `get_live_odds` | Live moneyline, spread, and totals from FanDuel/BetMGM |
 | `get_win_rate` | Documented win rate with full record breakdown |
 | `get_pending_picks` | Currently unresolved logged picks |
@@ -57,15 +76,10 @@ Add to your MCP config:
 | `analyze_game` | Full 12-agent analysis on a specific game — consensus pick + edge breakdown |
 | `get_system_status` | Health check — uptime, DB status, scheduler health |
 
-## Visual Bet Slip Cards
-
-`get_top_pick` and `get_todays_picks` return rich visual bet slip images alongside the pick data — showing the pick name, probability, matchup, WHY THIS PICK analysis, key stats, and all supporting edges. Renders directly in Claude chat.
-
 ## Get Your API Key
 
 Free access at [sportsbettingaianalyzer.com/account/api-keys](https://sportsbettingaianalyzer.com/account/api-keys)
 
-## Requirements
+## License
 
-- Python 3.10+
-- A free API key from [sportsbettingaianalyzer.com](https://sportsbettingaianalyzer.com/account/api-keys)
+MIT
