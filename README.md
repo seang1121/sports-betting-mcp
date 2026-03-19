@@ -33,22 +33,15 @@ The first MCP server for AI-powered sports betting analysis. Gives Claude and ot
 
 ## Quick Start
 
-### Install
-
 ```bash
 pip install sports-betting-mcp
 ```
 
-### Configure
+Set credentials and run:
 
 ```bash
 export SPORTS_BETTING_API_URL=https://sportsbettingaianalyzer.com
 export SPORTS_BETTING_API_KEY=your_api_key
-```
-
-### Run
-
-```bash
 sports-betting-mcp
 ```
 
@@ -75,13 +68,13 @@ Add to your MCP config:
 | Tool | Description |
 |------|-------------|
 | `get_top_pick` | Highest-confidence pick of the day with visual bet slip image |
-| `get_todays_picks` | All AI picks for today with confidence, edges, and bet slip cards |
+| `get_todays_picks` | All AI picks with confidence, edges, and bet slip cards per sport |
 | `get_live_odds` | Live moneyline, spread, and totals from FanDuel/BetMGM |
 | `get_win_rate` | Documented win rate with full record breakdown |
 | `get_pending_picks` | Currently unresolved logged picks |
 | `get_injury_report` | Active injuries affecting today's lines |
 | `get_line_movement` | Significant line shifts since market open |
-| `analyze_game` | Full 12-agent analysis on a specific game |
+| `analyze_game` | Full 12-agent analysis on a specific game -- consensus pick + edge breakdown |
 | `get_system_status` | Health check -- uptime, DB status, scheduler health |
 
 ## Get Your API Key
