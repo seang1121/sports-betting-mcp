@@ -1,6 +1,6 @@
 # sports-betting-mcp
 
-**MCP server exposing AI-powered sports betting predictions, live odds, and analysis tools to Claude.**
+**MCP server exposing AI-powered sports betting predictions, live odds, and analysis tools to AI agents.**
 
 ![Status](https://img.shields.io/badge/status-active-green)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
@@ -9,16 +9,16 @@
 
 mcp-name: `io.github.seang1121/sports-betting-mcp`
 
-Give Claude and other AI agents live access to sports betting intelligence -- picks, odds, injuries, line movement, win rates, and visual bet slip cards. Backed by real data: 1,353+ resolved picks with a 59.6% documented win rate across NBA, NHL, and NCAAB.
+Give AI agents live access to sports betting intelligence -- picks, odds, injuries, line movement, win rates, and visual bet slip cards. Backed by real data: 1,353+ resolved picks with a 59.6% documented win rate across NBA, NHL, and NCAAB.
 
 ## What It Does
 
-An MCP (Model Context Protocol) server that connects AI assistants to a production sports betting analyzer. Claude can query today's top picks, pull live odds from FanDuel/BetMGM, check injury reports, and track line movement -- all through structured tool calls that return data and visual bet slip images.
+An MCP (Model Context Protocol) server that connects AI assistants to a production sports betting analyzer. Agents can query today's top picks, pull live odds from FanDuel/BetMGM, check injury reports, and track line movement -- all through structured tool calls that return data and visual bet slip images.
 
 ## Features
 
 - **7 MCP tools** -- top pick, daily picks, live odds, win rate, pending picks, injury report, line movement
-- **Visual bet slip cards** -- rich images rendered directly in Claude chat showing pick analysis, key stats, and edges
+- **Visual bet slip cards** -- rich images rendered directly in chat showing pick analysis, key stats, and edges
 - **Live odds** -- moneyline, spread, and totals from major sportsbooks
 - **AI predictions** -- confidence scores, probability edges, and full analysis per pick
 - **Injury tracking** -- active injuries affecting today's lines
@@ -44,7 +44,7 @@ export SPORTS_BETTING_API_KEY=your_api_key
 sports-betting-mcp
 ```
 
-### Claude Desktop / Claude Code Setup
+### MCP Client Setup
 
 Add to your MCP config:
 
