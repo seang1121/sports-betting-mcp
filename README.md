@@ -11,12 +11,12 @@ mcp-name: `io.github.seang1121/sports-betting-mcp`
 
 ## What It Does
 
-The first MCP server for AI-powered sports betting analysis. Gives Claude and other AI agents live access to sports betting intelligence -- picks, odds, injuries, line movement, win rates, and visual bet slip cards. Backed by real data: 1,353+ resolved picks with a 59.6% documented win rate across NBA, NHL, and NCAAB.
+The first MCP server for AI-powered sports betting analysis. Gives AI agents live access to sports betting intelligence -- picks, odds, injuries, line movement, win rates, and visual bet slip cards. Backed by real data: 1,353+ resolved picks with a 59.6% documented win rate across NBA, NHL, and NCAAB.
 
 ## Features
 
 - **9 MCP Tools** -- picks, odds, injuries, line movement, game analysis, and more
-- **Visual Bet Slip Cards** -- rich images rendered directly in Claude chat
+- **Visual Bet Slip Cards** -- rich images rendered directly in chat
 - **Multi-Sport Coverage** -- NBA, NHL, NCAAB
 - **Live Odds** -- moneyline, spread, and totals from FanDuel/BetMGM
 - **12-Agent Game Analysis** -- consensus pick with edge breakdown
@@ -45,7 +45,7 @@ export SPORTS_BETTING_API_KEY=your_api_key
 sports-betting-mcp
 ```
 
-### Claude Desktop / Claude Code Setup
+### MCP Client Setup
 
 Add to your MCP config:
 
