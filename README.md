@@ -1,34 +1,35 @@
 # sports-betting-mcp
 
-**MCP server exposing AI-powered sports betting predictions, live odds, and analysis tools to AI agents.**
+Published MCP server for AI-powered sports betting analysis -- NBA, NHL, NCAAB.
 
 ![Status](https://img.shields.io/badge/status-active-green)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-blue)
+![Python](https://img.shields.io/badge/python-3.10+-blue)
 ![PyPI](https://img.shields.io/pypi/v/sports-betting-mcp)
+![License](https://img.shields.io/github/license/seang1121/sports-betting-mcp)
 
 mcp-name: `io.github.seang1121/sports-betting-mcp`
 
-Give AI agents live access to sports betting intelligence -- picks, odds, injuries, line movement, win rates, and visual bet slip cards. Backed by real data: 1,353+ resolved picks with a 59.6% documented win rate across NBA, NHL, and NCAAB.
-
 ## What It Does
 
-An MCP (Model Context Protocol) server that connects AI assistants to a production sports betting analyzer. Agents can query today's top picks, pull live odds from FanDuel/BetMGM, check injury reports, and track line movement -- all through structured tool calls that return data and visual bet slip images.
+The first MCP server for AI-powered sports betting analysis. Gives AI agents live access to sports betting intelligence -- picks, odds, injuries, line movement, win rates, and visual bet slip cards. Backed by real data: 1,353+ resolved picks with a 59.6% documented win rate across NBA, NHL, and NCAAB.
 
 ## Features
 
-- **7 MCP tools** -- top pick, daily picks, live odds, win rate, pending picks, injury report, line movement
-- **Visual bet slip cards** -- rich images rendered directly in chat showing pick analysis, key stats, and edges
-- **Live odds** -- moneyline, spread, and totals from major sportsbooks
-- **AI predictions** -- confidence scores, probability edges, and full analysis per pick
-- **Injury tracking** -- active injuries affecting today's lines
-- **Line movement** -- significant shifts since market open
+- **9 MCP Tools** -- picks, odds, injuries, line movement, game analysis, and more
+- **Visual Bet Slip Cards** -- rich images rendered directly in chat
+- **Multi-Sport Coverage** -- NBA, NHL, NCAAB
+- **Live Odds** -- moneyline, spread, and totals from FanDuel/BetMGM
+- **12-Agent Game Analysis** -- consensus pick with edge breakdown
+- **Documented Track Record** -- 1,353+ resolved picks, 59.6% win rate
 
 ## Tech Stack
 
-- **Python 3.10+** with MCP SDK (`mcp>=1.0.0`)
-- **Hatchling** build system
-- **MCP Protocol** for AI agent integration
+| Component | Technology |
+|-----------|------------|
+| **Runtime** | Python 3.10+ |
+| **Protocol** | MCP (Model Context Protocol) |
+| **Build** | Hatchling |
+| **Distribution** | PyPI (`sports-betting-mcp`) |
 
 ## Quick Start
 
@@ -62,7 +63,7 @@ Add to your MCP config:
 }
 ```
 
-## Available Tools (9)
+## Available Tools
 
 | Tool | Description |
 |------|-------------|
@@ -73,13 +74,18 @@ Add to your MCP config:
 | `get_pending_picks` | Currently unresolved logged picks |
 | `get_injury_report` | Active injuries affecting today's lines |
 | `get_line_movement` | Significant line shifts since market open |
-| `analyze_game` | Full 12-agent analysis on a specific game — consensus pick + edge breakdown |
-| `get_system_status` | Health check — uptime, DB status, scheduler health |
+| `analyze_game` | Full 12-agent analysis on a specific game -- consensus pick + edge breakdown |
+| `get_system_status` | Health check -- uptime, DB status, scheduler health |
 
 ## Get Your API Key
 
 Free access at [sportsbettingaianalyzer.com/account/api-keys](https://sportsbettingaianalyzer.com/account/api-keys)
 
+## Requirements
+
+- Python 3.10+
+- A free API key from [sportsbettingaianalyzer.com](https://sportsbettingaianalyzer.com)
+
 ## License
 
-MIT
+[MIT](./LICENSE)
