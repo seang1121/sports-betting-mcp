@@ -107,6 +107,10 @@ Get a free API key at [sportsbettingaianalyzer.com/account/api-keys](https://spo
 
 ---
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/seang1121-sports-betting-mcp).
+
 ## Available Tools
 
 9 tools. Every call returns structured data that AI agents can reason over, display, or act on.
