@@ -49,7 +49,7 @@ def _api_get(path: str, params: Optional[dict] = None) -> dict:
     except urllib.error.HTTPError as e:
         if e.code == 429:
             raise RuntimeError(
-                "Free tier rate limit reached (10 req/day). "
+                "Free tier rate limit reached (12 req/day). "
                 "Upgrade to Pro at https://sportsbettingaianalyzer.com/pricing"
             )
         if e.code == 401:
