@@ -1,13 +1,13 @@
 # sports-betting-mcp
 
-**The first MCP server for sports betting.** Give any AI agent live access to picks, odds, injuries, line movement, and game analysis -- backed by a documented track record across 1,353+ resolved picks.
+**The first MCP server for sports betting.** Give any AI agent live access to picks, odds, injuries, line movement, and game analysis across NBA, NHL, NCAAB, and MLB.
 
 ![Status](https://img.shields.io/badge/status-active-green)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 ![PyPI](https://img.shields.io/pypi/v/sports-betting-mcp)
 ![License](https://img.shields.io/github/license/seang1121/sports-betting-mcp)
 ![MCP](https://img.shields.io/badge/protocol-MCP-purple)
-![Sports](https://img.shields.io/badge/sports-NBA%20%7C%20NHL%20%7C%20NCAAB-orange)
+![Sports](https://img.shields.io/badge/sports-NBA%20%7C%20NHL%20%7C%20NCAAB%20%7C%20MLB-orange)
 
 ```
 mcp-name: io.github.seang1121/sports-betting-mcp
@@ -21,11 +21,10 @@ Every pick is logged before tip-off and resolved against final scores. Nothing i
 
 | Metric | Value |
 |--------|-------|
-| **Overall Win Rate** | **59.6%** |
-| **Total Resolved Picks** | 1,353+ |
-| **Sports Covered** | NBA, NHL, NCAAB |
+| **Sports Covered** | NBA, NHL, NCAAB, MLB |
 | **Bet Types** | Moneyline, Spread, Totals |
 | **Pick Source** | 12-agent consensus model |
+| **Tools** | 12 MCP tools |
 
 ### Results by Sport
 
@@ -34,6 +33,7 @@ Every pick is logged before tip-off and resolved against final scores. Nothing i
 | **NBA** | Documented W/L | 59%+ |
 | **NHL** | Documented W/L | 59%+ |
 | **NCAAB** | Documented W/L | 60%+ |
+| **MLB** | Documented W/L | Live |
 
 All results are queryable in real-time through the `get_win_rate` tool. Ask your AI agent to pull the latest numbers -- they update after every game.
 
@@ -48,8 +48,6 @@ This server is the bridge.
 Before `sports-betting-mcp`, an AI agent could talk *about* sports betting but couldn't actually look at today's odds, check injury reports, analyze line movement, or generate a pick with a documented edge. It was guessing. Now it has a direct feed.
 
 The system behind this MCP server runs a 12-agent analysis pipeline on every game: each agent evaluates a different angle (momentum, matchups, injuries, public betting %, sharp money, rest advantage, and more), then a consensus engine synthesizes them into a single pick with a confidence score and edge breakdown.
-
-The result is a 59.6% win rate across 1,353+ picks -- exposed through 9 tools that any MCP-compatible client can call.
 
 ---
 
@@ -109,7 +107,7 @@ Get a free API key at [sportsbettingaianalyzer.com/account/api-keys](https://spo
 
 ## Available Tools
 
-9 tools. Every call returns structured data that AI agents can reason over, display, or act on.
+12 tools. Every call returns structured data that AI agents can reason over, display, or act on.
 
 | Tool | What It Does |
 |------|-------------|
@@ -121,6 +119,9 @@ Get a free API key at [sportsbettingaianalyzer.com/account/api-keys](https://spo
 | `get_injury_report` | Active injuries affecting today's lines and matchups |
 | `get_line_movement` | Significant line shifts since market open -- sharp money signals |
 | `analyze_game` | Full 12-agent analysis on any game: consensus pick + edge breakdown |
+| `get_completed_picks` | Recently resolved picks with W/L results -- verify the track record |
+| `get_leaderboard` | Rankings by win rate -- AI model vs human bettors |
+| `log_pick` | Log your own pick into the system -- gets auto-resolved against final scores |
 | `get_system_status` | Health check -- uptime, database status, scheduler health |
 
 ### Visual Bet Slips
@@ -151,18 +152,16 @@ The confidence score and edge breakdown are included in every pick response, so 
 | **Transport** | stdio |
 | **Build** | Hatchling |
 | **Distribution** | PyPI (`sports-betting-mcp`) |
-| **Backend** | Flask + PostgreSQL |
+| **Backend** | Flask + SQLite |
 | **Analysis** | 12-agent consensus pipeline |
 
 ---
 
 ## Who Built This
 
-Built by a sales professional who got tired of manually checking odds across apps and spreadsheets. The problem was simple: the data exists, the analysis can be automated, and AI agents are the right interface -- but nobody had connected the pipes.
+Built by a developer who got tired of manually checking odds across apps and spreadsheets. The data exists, the analysis can be automated, and AI agents are the right interface -- but nobody had connected the pipes.
 
 This started as a personal tool to automate a nightly betting research workflow. When MCP launched and made it possible to expose that system to any AI agent, the decision to publish was obvious.
-
-The 59.6% win rate is not a backtest. It is a live, logged, auditable record.
 
 ---
 

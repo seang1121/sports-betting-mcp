@@ -1,6 +1,6 @@
 """
 sports-betting-mcp — MCP server for AI-powered sports betting analysis
-Backed by real data: 1,353+ resolved picks, 59.6% win rate
+Live picks, odds, injuries, and line movement across NBA, NHL, NCAAB, MLB
 """
 
 import base64
@@ -18,10 +18,13 @@ API_KEY = os.environ.get("SPORTS_BETTING_API_KEY", "")
 mcp = FastMCP(
     "sports-betting-mcp",
     instructions=(
-        "AI-powered sports betting analysis server. "
-        "Provides picks, odds, win rates, injury data, and line movement "
-        "from a live betting analyzer with 1,353+ resolved picks and a 59.6% win rate. "
-        "Supports NBA, NHL, and NCAAB. Always check win rate and injuries before placing picks."
+        "Live sports betting analysis server. "
+        "Query real-time AI picks, live odds, injury reports, and line movement "
+        "across NBA, NHL, NCAAB, and MLB. "
+        "12 tools: today's picks with confidence scores, live odds from FanDuel/BetMGM, "
+        "injury flags, sharp money line movement, full multi-agent game analysis, "
+        "win rate tracking, leaderboard, and pick logging. "
+        "Data updates continuously throughout game day."
     )
 )
 
@@ -102,7 +105,7 @@ def get_todays_picks(sport: str = "all") -> list:
     Includes a visual bet slip card for the top pick per sport.
 
     Args:
-        sport: Filter by sport — 'nba', 'nhl', 'ncaab', or 'all' (default)
+        sport: Filter by sport — 'nba', 'nhl', 'ncaab', 'mlb', or 'all' (default)
 
     Returns:
         List of picks with pick name, bet type, line, odds, confidence, and edge score.
@@ -148,7 +151,7 @@ def get_todays_picks(sport: str = "all") -> list:
         )
         for p in sorted_picks:
             sport_tag = (p.get("sport") or "").upper()
-            if sport_tag in seen_sports or sport_tag not in ("NBA", "NHL", "NCAAB"):
+            if sport_tag in seen_sports or sport_tag not in ("NBA", "NHL", "NCAAB", "MLB"):
                 continue
             pick_name = p.get("pick_name") or p.get("team") or ""
             prob = float(p.get("edge_score") or 0) + 50
@@ -157,7 +160,7 @@ def get_todays_picks(sport: str = "all") -> list:
                 if img:
                     content.append(img)
             seen_sports.add(sport_tag)
-            if len(seen_sports) == 3:
+            if len(seen_sports) == 4:
                 break
 
         return content
@@ -171,7 +174,7 @@ def get_top_pick(sport: str = "all") -> list:
     Get the single highest-confidence pick available today with a visual bet slip card.
 
     Args:
-        sport: Filter by sport — 'nba', 'nhl', 'ncaab', or 'all' (default)
+        sport: Filter by sport — 'nba', 'nhl', 'ncaab', 'mlb', or 'all' (default)
 
     Returns:
         The best pick with full analysis details and a visual bet slip image.
@@ -224,13 +227,13 @@ def get_live_odds(sport: str) -> str:
     Get current live odds for a sport from FanDuel and BetMGM.
 
     Args:
-        sport: Sport to fetch — 'nba', 'nhl', or 'ncaab'
+        sport: Sport to fetch — 'nba', 'nhl', 'ncaab', or 'mlb'
 
     Returns:
         Live moneyline, spread, and total odds for today's games.
     """
-    if sport.lower() not in ("nba", "nhl", "ncaab"):
-        return "Invalid sport. Use: nba, nhl, or ncaab"
+    if sport.lower() not in ("nba", "nhl", "ncaab", "mlb"):
+        return "Invalid sport. Use: nba, nhl, ncaab, or mlb"
 
     try:
         data = _api_get(f"/xk/o/{sport.lower()}")
@@ -341,7 +344,7 @@ def get_injury_report(sport: str = "all") -> str:
     Data refreshes at 5am and 5pm EST from Covers.com.
 
     Args:
-        sport: Filter by sport — 'nba', 'nhl', 'ncaab', or 'all'
+        sport: Filter by sport — 'nba', 'nhl', 'ncaab', 'mlb', or 'all'
 
     Returns:
         Active injury reports with player names, status, and impact assessment.
@@ -376,7 +379,7 @@ def get_line_movement(sport: str = "all") -> str:
     Sharp money often signals where to bet.
 
     Args:
-        sport: Filter by sport — 'nba', 'nhl', 'ncaab', or 'all'
+        sport: Filter by sport — 'nba', 'nhl', 'ncaab', 'mlb', or 'all'
 
     Returns:
         Games with notable line shifts, direction, and magnitude.
@@ -419,14 +422,14 @@ def analyze_game(sport: str, game_id: str) -> str:
     Uses 12 specialized agents to evaluate every angle.
 
     Args:
-        sport: Sport — 'nba', 'nhl', or 'ncaab'
+        sport: Sport — 'nba', 'nhl', 'ncaab', or 'mlb'
         game_id: Game ID from the get_live_odds tool
 
     Returns:
         Complete multi-agent analysis with consensus pick, confidence, and edge breakdown.
     """
-    if sport.lower() not in ("nba", "nhl", "ncaab"):
-        return "Invalid sport. Use: nba, nhl, or ncaab"
+    if sport.lower() not in ("nba", "nhl", "ncaab", "mlb"):
+        return "Invalid sport. Use: nba, nhl, ncaab, or mlb"
 
     try:
         data = _api_post("/api/analyze", {"sport": sport.upper(), "game_id": game_id})
@@ -450,6 +453,153 @@ def analyze_game(sport: str, game_id: str) -> str:
         return "\n".join(lines)
     except Exception as e:
         return f"Error analyzing game: {e}"
+
+
+@mcp.tool()
+def log_pick(
+    pick_name: str,
+    sport: str,
+    bet_type: str,
+    odds: int,
+    wager_amount: float = 4.0,
+    game: str = "",
+    line_value: float = 0,
+    reasoning: str = "",
+    odds_api_game_id: str = "",
+) -> str:
+    """
+    Log a pick to the betting analyzer. Your pick enters the learning loop
+    and gets resolved automatically when the game finishes.
+
+    Args:
+        pick_name: Team or player name (e.g. 'Lakers', 'O225.5')
+        sport: Sport — 'nba', 'nhl', 'ncaab', or 'mlb'
+        bet_type: Type of bet — 'moneyline', 'spread', or 'total'
+        odds: American odds (e.g. -110, +150)
+        wager_amount: Wager in dollars, $1-$100 (default $4)
+        game: Game description (e.g. 'Lakers vs Celtics')
+        line_value: Spread or total line (e.g. -3.5 or 225.5)
+        reasoning: Why you're making this pick
+        odds_api_game_id: Game ID from get_live_odds for duplicate prevention
+
+    Returns:
+        Confirmation with pick ID, wager, and potential profit.
+    """
+    try:
+        data = _api_post("/xk/log", {
+            "pick_name": pick_name,
+            "sport": sport.upper(),
+            "bet_type": bet_type,
+            "odds": odds,
+            "wager_amount": wager_amount,
+            "game": game,
+            "line_value": line_value,
+            "reasoning": reasoning,
+            "odds_api_game_id": odds_api_game_id,
+        })
+
+        if data.get("success"):
+            return (
+                f"PICK LOGGED\n"
+                f"  Pick:     {data.get('pick_name', pick_name)}\n"
+                f"  Sport:    {data.get('sport', sport).upper()}\n"
+                f"  Odds:     {data.get('odds', odds)}\n"
+                f"  Wager:    ${data.get('wager_amount', wager_amount):.2f}\n"
+                f"  Profit:   ${data.get('potential_profit', 0):.2f} (if win)\n"
+                f"  Pick ID:  {data.get('pick_id', 'N/A')}\n\n"
+                f"Pick will auto-resolve when the game finishes."
+            )
+        else:
+            error = data.get("error", "Unknown error")
+            if data.get("duplicate"):
+                return f"Already logged a {bet_type} pick for this game today."
+            return f"Failed to log pick: {error}"
+    except Exception as e:
+        return f"Error logging pick: {e}"
+
+
+@mcp.tool()
+def get_completed_picks(sport: str = "all", limit: int = 50) -> str:
+    """
+    Get recently completed picks with W/L results.
+    Use this to verify the track record or analyze historical performance.
+
+    Args:
+        sport: Filter by sport — 'nba', 'nhl', 'ncaab', 'mlb', or 'all' (default)
+        limit: Number of picks to return, max 100 (default 50)
+
+    Returns:
+        Recent completed picks with results, bet type, odds, and date.
+    """
+    try:
+        params = {"limit": min(limit, 100)}
+        if sport != "all":
+            params["sport"] = sport.upper()
+
+        data = _api_get("/xk/c", params)
+        picks = data.get("picks", [])
+
+        if not picks:
+            return f"No completed picks found for {sport.upper() if sport != 'all' else 'any sport'}."
+
+        wins = sum(1 for p in picks if p.get("result") == "W")
+        losses = sum(1 for p in picks if p.get("result") == "L")
+        pct = wins / (wins + losses) * 100 if (wins + losses) > 0 else 0
+
+        lines = [
+            f"COMPLETED PICKS — {sport.upper() if sport != 'all' else 'ALL SPORTS'} "
+            f"(last {len(picks)}: {wins}W-{losses}L, {pct:.1f}%)\n"
+        ]
+
+        for p in picks:
+            result = p.get("result", "?")
+            icon = "W" if result == "W" else "L"
+            sport_tag = (p.get("sport") or "").upper()
+            pick_name = p.get("pick_name", "?")
+            bet_type = (p.get("bet_type") or "?").upper()
+            odds = p.get("odds", "")
+            date = p.get("date", "")
+
+            odds_str = f" ({odds})" if odds else ""
+            lines.append(f"  [{icon}] [{sport_tag}] {pick_name} {bet_type}{odds_str} — {date}")
+
+        return "\n".join(lines)
+    except Exception as e:
+        return f"Error fetching completed picks: {e}"
+
+
+@mcp.tool()
+def get_leaderboard() -> str:
+    """
+    Get the current leaderboard — all users ranked by win rate,
+    including the AI model's performance.
+
+    Returns:
+        Rankings with username, record, win rate, and whether the entry is AI or human.
+    """
+    try:
+        data = _api_get("/xk/lb")
+        rankings = data.get("rankings", [])
+
+        if not rankings:
+            return "Leaderboard not available."
+
+        lines = [f"LEADERBOARD — {data.get('total_users', len(rankings))} participants\n"]
+
+        for r in rankings:
+            rank = r.get("rank", "?")
+            name = r.get("username", "?")
+            wins = r.get("wins", 0)
+            losses = r.get("losses", 0)
+            total = r.get("total_picks", 0)
+            pct = r.get("win_rate", 0)
+            tag = " [AI]" if r.get("is_ai") else ""
+
+            lines.append(f"  #{rank} {name}{tag} — {wins}W-{losses}L ({pct}%) | {total} picks")
+
+        return "\n".join(lines)
+    except Exception as e:
+        return f"Error fetching leaderboard: {e}"
 
 
 @mcp.tool()
