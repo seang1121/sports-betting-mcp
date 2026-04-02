@@ -432,59 +432,43 @@ def analyze_game(sport: str, game_id: str) -> str:
     if sport.lower() not in ("nba", "nhl", "ncaab", "mlb"):
         return "Invalid sport. Use: nba, nhl, ncaab, or mlb"
 
+    pro_upsell = (
+        f"GAME ANALYSIS — {sport.upper()} (Pro Feature)\n\n"
+        "Full 12-agent analysis is available to Pro subscribers. "
+        "Each game is evaluated by 12 specialized agents covering "
+        "momentum, matchups, injuries, rest, sharp money, and more — "
+        "then synthesized into a consensus pick with edge breakdown.\n\n"
+        "What you get with Pro:\n"
+        "  - Full multi-agent analysis on any game\n"
+        "  - Unlimited API requests\n"
+        "  - Priority pick delivery\n\n"
+        "Upgrade at https://sportsbettingaianalyzer.com/pricing\n\n"
+        "Free tools available now: get_todays_picks, get_top_pick, "
+        "get_live_odds, get_injury_report, get_win_rate"
+    )
+
     try:
         data = _api_post("/api/analyze", {"sport": sport.upper(), "game_id": game_id})
+    except Exception:
+        return pro_upsell
 
-        if not data.get("success", True):
-            error = data.get("error", "")
-            if "auth" in error.lower() or "login" in error.lower():
-                return (
-                    f"GAME ANALYSIS — {sport.upper()} (Pro Feature)\n\n"
-                    "Full 12-agent analysis is available to Pro subscribers. "
-                    "Each game is evaluated by 12 specialized agents covering "
-                    "momentum, matchups, injuries, rest, sharp money, and more — "
-                    "then synthesized into a consensus pick with edge breakdown.\n\n"
-                    "What you get with Pro:\n"
-                    "  - Full multi-agent analysis on any game\n"
-                    "  - Unlimited API requests\n"
-                    "  - Priority pick delivery\n\n"
-                    "Upgrade at https://sportsbettingaianalyzer.com/pricing\n\n"
-                    "In the meantime, use get_todays_picks and get_top_pick "
-                    "for AI picks with confidence scores — available on all tiers."
-                )
-            return f"Analysis failed: {error}"
+    if not isinstance(data, dict) or not data.get("success", True):
+        return pro_upsell
 
-        lines = [f"FULL GAME ANALYSIS — {sport.upper()}\n"]
+    lines = [f"FULL GAME ANALYSIS — {sport.upper()}\n"]
 
-        pick = data.get("pick") or data.get("recommendation") or {}
-        if pick:
-            lines.append(f"  Pick:       {pick.get('pick_name', 'N/A')}")
-            lines.append(f"  Bet Type:   {pick.get('bet_type', 'N/A')}")
-            lines.append(f"  Confidence: {pick.get('confidence', 'N/A')}")
-            lines.append(f"  Edge Score: {pick.get('edge_score', 'N/A')}")
+    pick = data.get("pick") or data.get("recommendation") or {}
+    if pick:
+        lines.append(f"  Pick:       {pick.get('pick_name', 'N/A')}")
+        lines.append(f"  Bet Type:   {pick.get('bet_type', 'N/A')}")
+        lines.append(f"  Confidence: {pick.get('confidence', 'N/A')}")
+        lines.append(f"  Edge Score: {pick.get('edge_score', 'N/A')}")
 
-        analysis = data.get("analysis") or data.get("details") or ""
-        if analysis:
-            lines.append(f"\n{analysis[:1500]}")
+    analysis = data.get("analysis") or data.get("details") or ""
+    if analysis:
+        lines.append(f"\n{analysis[:1500]}")
 
-        return "\n".join(lines)
-    except RuntimeError as e:
-        err = str(e)
-        if "401" in err or "auth" in err.lower():
-            return (
-                f"GAME ANALYSIS — {sport.upper()} (Pro Feature)\n\n"
-                "Full 12-agent analysis is available to Pro subscribers.\n\n"
-                "What's included:\n"
-                "  - 12 specialized agents evaluate every angle\n"
-                "  - Consensus pick with confidence score\n"
-                "  - Edge breakdown vs market line\n\n"
-                "Upgrade at https://sportsbettingaianalyzer.com/pricing\n\n"
-                "Free tools available now: get_todays_picks, get_top_pick, "
-                "get_live_odds, get_injury_report, get_win_rate"
-            )
-        return f"Error analyzing game: {e}"
-    except Exception as e:
-        return f"Error analyzing game: {e}"
+    return "\n".join(lines)
 
 
 @mcp.tool()
