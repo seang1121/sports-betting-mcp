@@ -418,15 +418,16 @@ def get_line_movement(sport: str = "all") -> str:
 @mcp.tool()
 def analyze_game(sport: str, game_id: str) -> str:
     """
-    Run full multi-agent analysis on a specific game.
-    Uses 12 specialized agents to evaluate every angle.
+    Run full 12-agent analysis on a specific game — Pro tier only.
+    Free and comp API keys receive a preview with upgrade instructions.
 
     Args:
         sport: Sport — 'nba', 'nhl', 'ncaab', or 'mlb'
         game_id: Game ID from the get_live_odds tool
 
     Returns:
-        Complete multi-agent analysis with consensus pick, confidence, and edge breakdown.
+        Pro: Complete multi-agent analysis with consensus pick, confidence, and edge breakdown.
+        Free: Preview message with upgrade link.
     """
     if sport.lower() not in ("nba", "nhl", "ncaab", "mlb"):
         return "Invalid sport. Use: nba, nhl, ncaab, or mlb"
@@ -435,7 +436,23 @@ def analyze_game(sport: str, game_id: str) -> str:
         data = _api_post("/api/analyze", {"sport": sport.upper(), "game_id": game_id})
 
         if not data.get("success", True):
-            return f"Analysis failed: {data.get('error', 'Unknown error')}"
+            error = data.get("error", "")
+            if "auth" in error.lower() or "login" in error.lower():
+                return (
+                    f"GAME ANALYSIS — {sport.upper()} (Pro Feature)\n\n"
+                    "Full 12-agent analysis is available to Pro subscribers. "
+                    "Each game is evaluated by 12 specialized agents covering "
+                    "momentum, matchups, injuries, rest, sharp money, and more — "
+                    "then synthesized into a consensus pick with edge breakdown.\n\n"
+                    "What you get with Pro:\n"
+                    "  - Full multi-agent analysis on any game\n"
+                    "  - Unlimited API requests\n"
+                    "  - Priority pick delivery\n\n"
+                    "Upgrade at https://sportsbettingaianalyzer.com/pricing\n\n"
+                    "In the meantime, use get_todays_picks and get_top_pick "
+                    "for AI picks with confidence scores — available on all tiers."
+                )
+            return f"Analysis failed: {error}"
 
         lines = [f"FULL GAME ANALYSIS — {sport.upper()}\n"]
 
@@ -451,6 +468,21 @@ def analyze_game(sport: str, game_id: str) -> str:
             lines.append(f"\n{analysis[:1500]}")
 
         return "\n".join(lines)
+    except RuntimeError as e:
+        err = str(e)
+        if "401" in err or "auth" in err.lower():
+            return (
+                f"GAME ANALYSIS — {sport.upper()} (Pro Feature)\n\n"
+                "Full 12-agent analysis is available to Pro subscribers.\n\n"
+                "What's included:\n"
+                "  - 12 specialized agents evaluate every angle\n"
+                "  - Consensus pick with confidence score\n"
+                "  - Edge breakdown vs market line\n\n"
+                "Upgrade at https://sportsbettingaianalyzer.com/pricing\n\n"
+                "Free tools available now: get_todays_picks, get_top_pick, "
+                "get_live_odds, get_injury_report, get_win_rate"
+            )
+        return f"Error analyzing game: {e}"
     except Exception as e:
         return f"Error analyzing game: {e}"
 
