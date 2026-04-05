@@ -170,6 +170,12 @@ This started as a personal tool to automate a nightly betting research workflow.
 - Python 3.10+
 - A free API key from [sportsbettingaianalyzer.com](https://sportsbettingaianalyzer.com)
 
+## Related Projects
+
+- **[Multi-Lender Mortgage Rate Lookup](https://github.com/seang1121/Multi-Lender-Mortgage-Rate-Lookup)** -- One command, 10 lenders, sorted best to worst. Stealth-browser mortgage rate comparison.
+- **[March Madness Bracket Predictor](https://github.com/seang1121/ncaab-MarchMadness-Trend-analysis)** -- 5-model ensemble, 14-year backtest, 77% accuracy. Interactive bracket generator.
+- **[Agent Command Center](https://github.com/seang1121/acc-agent-command-center)** -- Dashboard that auto-discovers MCP servers, agents, hooks, cron jobs, and repos.
+
 ## License
 
 [MIT](./LICENSE)
