@@ -24,10 +24,21 @@ Connects any MCP-compatible AI agent to a live sports betting analysis system. E
 | **Sports Covered** | NBA, NHL, NCAAB, MLB |
 | **Bet Types** | Moneyline, Spread, Totals |
 | **Pick Source** | 12-agent consensus model |
-| **Tools** | 11 MCP tools |
+| **Total Picks** | 3,859+ resolved |
+| **Platform Users** | 30 |
+| **Tools** | 12 MCP tools |
 | **Auth** | API key (X-API-Key header) |
 
-All results are queryable in real-time. Ask your AI agent to pull the latest numbers -- they update after every game.
+### Results by Sport
+
+| Sport | Picks | Wins | Win Rate |
+|-------|-------|------|----------|
+| **NBA** | 1,267 | 762 | **60.1%** |
+| **NHL** | 1,148 | 656 | **57.1%** |
+| **NCAAB** | 1,149 | 549 | 47.8% |
+| **MLB** | 283 | 109 | 38.5% *(launched Apr 2026)* |
+
+All results are queryable in real-time via the `get_win_rate` tool. Numbers update after every game.
 
 ---
 
@@ -82,7 +93,7 @@ Any client that supports the [Model Context Protocol](https://modelcontextprotoc
 
 ## Available Tools
 
-11 tools. Every call returns structured data that AI agents can reason over, display, or act on.
+12 tools. Every call returns structured data that AI agents can reason over, display, or act on.
 
 ### Picks & Analysis
 
