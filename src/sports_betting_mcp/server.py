@@ -21,7 +21,7 @@ mcp = FastMCP(
         "AI-powered sports betting analysis server. "
         "Provides picks, odds, win rates, injury data, and line movement "
         "from a live betting analyzer with 1,353+ resolved picks and a 59.6% win rate. "
-        "Supports NBA, NHL, and NCAAB. Always check win rate and injuries before placing picks."
+        "Supports NBA, NHL, NCAAB, and MLB. Always check win rate and injuries before placing picks."
     )
 )
 
@@ -85,7 +85,7 @@ def get_todays_picks(sport: str = "all") -> list:
     Get today's AI-generated picks with confidence and edge scores.
 
     Args:
-        sport: Filter by sport — 'nba', 'nhl', 'ncaab', or 'all' (default)
+        sport: Filter by sport — 'nba', 'nhl', 'ncaab', 'mlb', or 'all' (default)
 
     Returns:
         List of picks with pick name, bet type, line, odds, confidence, and edge score.
@@ -133,7 +133,7 @@ def get_top_pick(sport: str = "all") -> list:
     Get the single highest-confidence pick available today.
 
     Args:
-        sport: Filter by sport — 'nba', 'nhl', 'ncaab', or 'all' (default)
+        sport: Filter by sport — 'nba', 'nhl', 'ncaab', 'mlb', or 'all' (default)
 
     Returns:
         The best pick with full analysis details.
@@ -183,13 +183,13 @@ def get_live_odds(sport: str) -> str:
     Get current live odds for a sport from FanDuel and BetMGM.
 
     Args:
-        sport: Sport to fetch — 'nba', 'nhl', or 'ncaab'
+        sport: Sport to fetch — 'nba', 'nhl', 'ncaab', or 'mlb'
 
     Returns:
         Live moneyline, spread, and total odds for today's games.
     """
-    if sport.lower() not in ("nba", "nhl", "ncaab"):
-        return "Invalid sport. Use: nba, nhl, or ncaab"
+    if sport.lower() not in ("nba", "nhl", "ncaab", "mlb"):
+        return "Invalid sport. Use: nba, nhl, ncaab, or mlb"
 
     try:
         data = _api_get(f"/api/odds/{sport.upper()}")
@@ -380,14 +380,14 @@ def analyze_game(sport: str, game_id: str) -> str:
     Uses 12 specialized agents to evaluate every angle.
 
     Args:
-        sport: Sport — 'nba', 'nhl', or 'ncaab'
+        sport: Sport — 'nba', 'nhl', 'ncaab', or 'mlb'
         game_id: Game ID from the get_live_odds tool
 
     Returns:
         Complete multi-agent analysis with consensus pick, confidence, and edge breakdown.
     """
-    if sport.lower() not in ("nba", "nhl", "ncaab"):
-        return "Invalid sport. Use: nba, nhl, or ncaab"
+    if sport.lower() not in ("nba", "nhl", "ncaab", "mlb"):
+        return "Invalid sport. Use: nba, nhl, ncaab, or mlb"
 
     try:
         data = _api_post("/api/analyze", {"sport": sport.upper(), "game_id": game_id})

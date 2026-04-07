@@ -1,13 +1,13 @@
 # sports-betting-mcp
 
-**The first MCP server for sports betting.** Give any AI agent live access to picks, odds, game analysis, and performance tracking across NBA, NHL, and NCAAB.
+**The first MCP server for sports betting.** Give any AI agent live access to picks, odds, game analysis, and performance tracking across NBA, NHL, NCAAB, and MLB.
 
 ![Status](https://img.shields.io/badge/status-active-green)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 ![PyPI](https://img.shields.io/pypi/v/sports-betting-mcp)
 ![License](https://img.shields.io/github/license/seang1121/sports-betting-mcp)
 ![MCP](https://img.shields.io/badge/protocol-MCP-purple)
-![Sports](https://img.shields.io/badge/sports-NBA%20%7C%20NHL%20%7C%20NCAAB-orange)
+![Sports](https://img.shields.io/badge/sports-NBA%20%7C%20NHL%20%7C%20NCAAB%20%7C%20MLB-orange)
 
 ```
 mcp-name: io.github.seang1121/sports-betting-mcp
@@ -21,7 +21,7 @@ Connects any MCP-compatible AI agent to a live sports betting analysis system. E
 
 | Metric | Value |
 |--------|-------|
-| **Sports Covered** | NBA, NHL, NCAAB |
+| **Sports Covered** | NBA, NHL, NCAAB, MLB |
 | **Bet Types** | Moneyline, Spread, Totals |
 | **Pick Source** | 12-agent consensus model |
 | **Tools** | 11 MCP tools |

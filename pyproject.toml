@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "sports-betting-mcp"
 version = "1.0.1"
-description = "Live sports betting MCP server �� AI picks, odds, game analysis, and performance tracking across NBA, NHL, NCAAB. 11 tools."
+description = "Live sports betting MCP server -- AI picks, odds, game analysis, and performance tracking across NBA, NHL, NCAAB, MLB. 11 tools."
 mcpName = "io.github.seang1121/sports-betting-mcp"
 readme = "README.md"
 license = { text = "MIT" }
@@ -13,7 +13,7 @@ requires-python = ">=3.10"
 authors = [
     {name = "Sean Goudy"},
 ]
-keywords = ["mcp", "sports-betting", "ai", "nba", "nhl", "ncaab", "odds", "predictions", "claude"]
+keywords = ["mcp", "sports-betting", "ai", "nba", "nhl", "ncaab", "mlb", "odds", "predictions", "claude"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
