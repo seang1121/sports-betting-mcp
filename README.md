@@ -136,25 +136,79 @@ The confidence score and edge breakdown are included in every pick response, so 
 
 ---
 
+## Full API — 22 Endpoints
+
+The API has two tiers: **Free** (any API key) and **Pro** (approved access).
+
+### Free Tier (available to all API key holders)
+
+| Endpoint | Method | What It Does |
+|----------|--------|-------------|
+| `/xk/p` | GET | Today's AI picks with confidence scores |
+| `/xk/o/{sport}` | GET | Live odds from FanDuel/BetMGM |
+| `/xk/w` | GET | Win rate breakdown by sport and bet type |
+| `/xk/i` | GET | Active injury report from Covers.com |
+| `/xk/m` | GET | Significant line movement (sharp money signals) |
+| `/xk/games` | GET | Today's full schedule with odds snapshot and AI pick flags |
+| `/xk/stats` | GET | Model performance by sport, bet type, confidence tier |
+| `/xk/lb` | GET | Leaderboard — AI vs human win rates |
+| `/xk/news` | GET | Sports news feed from RSS sources |
+| `/xk/q` | GET | Currently pending (unresolved) picks |
+
+### Pro Tier (requires approved access)
+
+| Endpoint | Method | What It Does |
+|----------|--------|-------------|
+| `/xk/full` | GET | Full structured picks — complete edge breakdowns, positive/negative edges, reasoning, scorecard, opposing side with odds, line movement, quality flags |
+| `/xk/analyze` | POST | On-demand 12-agent analysis for any game — send team names, get full consensus |
+| `/xk/results` | GET | Resolved picks with W/L, actual scores, profit, top contributing edges |
+| `/xk/clv` | GET | Closing Line Value analysis — did the line move in our favor? |
+| `/xk/search` | GET | Search all picks by team name with W/L record |
+| `/xk/log` | POST | Log a pick (supports flip flag, pick source tracking) |
+| `/xk/log/batch` | POST | Batch log up to 20 picks with per-pick success/duplicate/error status |
+| `/xk/history` | GET | Your pick history — pending, resolved, win rate |
+| `/xk/slip` | POST | Generate Nimrod bet slip image |
+| `/xk/webhook` | POST/GET/DELETE | Register webhooks for pick events |
+| `/xk/full` | GET | Includes fade/flip data for every pick — opposing side, line, odds |
+
+### Pro Pick Payload
+
+Every pick from `/xk/full` includes:
+
+```json
+{
+  "ai_pick": "Lakers -5.5",
+  "ai_verdict": "STRONG BET",
+  "ai_probability": "65%",
+  "ai_reasoning": "Lakers defense ranks top 5, opponent on B2B...",
+  "edges": [13 individual edge factors],
+  "top_edges": [top 5 positive],
+  "negative_edges": [top 3 negative],
+  "scorecard": [3 model scores],
+  "fade_pick": "Celtics +5.5",
+  "fade_team": "Celtics",
+  "fade_odds": "+105",
+  "fade_note": "Betting AGAINST the AI — take Celtics +5.5",
+  "line_moved": true,
+  "flags": ["line_moved"],
+  "data_quality": "good"
+}
+```
+
+### Pick Source Tracking (for learning)
+
+When logging picks, include `pick_source` to track decision types:
+- `model_agree` — following the AI's pick
+- `flip` — fading/betting against the AI
+- `manual_override` — custom pick
+
+This enables win rate comparison between model-agree vs flip picks over time.
+
+---
+
 ## API Authentication
 
-The server authenticates using the `X-API-Key` header. All tool calls go through authenticated endpoints -- no session cookies or browser login required.
-
-**Endpoint map** (what each tool calls under the hood):
-
-| Tool | Endpoint | Method |
-|------|----------|--------|
-| `get_todays_picks` | `/api/picks/ai-today` | GET |
-| `get_top_pick` | `/api/picks/ai-today` | GET |
-| `get_live_odds` | `/api/odds/{sport}` | GET |
-| `get_win_rate` | `/api/stats/performance` | GET |
-| `get_pending_picks` | `/api/picks/pending` | GET |
-| `get_completed_picks` | `/api/picks/completed` | GET |
-| `get_model_stats` | `/api/stats/model` | GET |
-| `analyze_game` | `/api/analyze` | POST |
-| `get_system_status` | `/api/health` | GET |
-| `get_alerts` | `/api/alerts` | GET |
-| `get_leaderboard` | `/api/leaderboard` | GET |
+Authenticate with `X-API-Key` header. Get a free key at [sportsbettingaianalyzer.com](https://sportsbettingaianalyzer.com). Pro access requires admin approval.
 
 ---
 
@@ -169,13 +223,14 @@ The server authenticates using the `X-API-Key` header. All tool calls go through
 | **Distribution** | PyPI (`sports-betting-mcp`) |
 | **Backend** | Flask + SQLite |
 | **Analysis** | 12-agent consensus pipeline |
+| **Sports** | NBA, NHL, NCAAB, MLB |
 
 ---
 
 ## Related Projects
 
-- **[March Madness Bracket Predictor](https://github.com/seang1121/ncaab-MarchMadness-Trend-analysis)** -- 5-model ensemble, 14-year backtest, 77% accuracy
-- **[Multi-Lender Mortgage Rate Lookup](https://github.com/seang1121/Multi-Lender-Mortgage-Rate-Lookup)** -- One command, 10 lenders, sorted best to worst
+- **[Mortgage Rates MCP Server](https://github.com/seang1121/mortgage-rates-mcp)** -- 17 lenders, 13 tools, real-time mortgage rate intelligence
+- **[March Madness Bracket Predictor](https://github.com/seang1121/ncaab-MarchMadness-Trend-analysis)** -- 5-model ensemble, 14-year backtest, 77% accuracy, correctly predicted 2026 champion
 - **[Agent Command Center](https://github.com/seang1121/acc-agent-command-center)** -- Dashboard that auto-discovers MCP servers, agents, hooks, cron jobs, and repos
 
 ## License
